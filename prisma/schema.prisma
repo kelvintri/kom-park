@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Peran {
+  MAHASISWA
+  DOSEN
+  STAF
+}
+
+enum Status {
+  AKTIF
+  NONAKTIF
+}
+
+enum StatusKartu {
+  AKTIF
+  HILANG
+  DIBLOKIR
+}
+
+enum TipeGate {
+  MASUK
+  KELUAR
+}
+
+enum Sumber {
+  HARDWARE
+  DEMO
+}
+
+enum StatusLog {
+  MASUK
+  KELUAR
+  ANOMALI
+}
+
+model Pengguna {
+  id         String      @id @default(uuid())
+  nama       String
+  nimNip     String      @unique
+  peran      Peran
+  status     Status      @default(AKTIF)
+  dibuatPada DateTime    @default(now())
+  kartuRfid  KartuRfid[]
+}
+
+model KartuRfid {
+  id          String      @id @default(uuid())
+  penggunaId  String
+  pengguna    Pengguna    @relation(fields: [penggunaId], references: [id])
+  uidKartu    String      @unique
+  status      StatusKartu @default(AKTIF)
+  aktifDari   DateTime    @default(now())
+  aktifHingga DateTime?
+  logParkir   LogParkir[]
+
+  @@index([uidKartu])
+}
+
+model Gate {
+  id        String      @id @default(uuid())
+  nama      String
+  tipe      TipeGate
+  lokasi    String
+  status    Status      @default(AKTIF)
+  logMasuk  LogParkir[] @relation("GateMasuk")
+  logKeluar LogParkir[] @relation("GateKeluar")
+}
+
+model LogParkir {
+  id              String      @id @default(uuid())
+  kartuRfidId     String?
+  kartuRfid       KartuRfid?  @relation(fields: [kartuRfidId], references: [id])
+  gateMasukId     String?
+  gateMasuk       Gate?       @relation("GateMasuk", fields: [gateMasukId], references: [id])
+  gateKeluarId    String?
+  gateKeluar      Gate?       @relation("GateKeluar", fields: [gateKeluarId], references: [id])
+  fotoMasuk       String?
+  fotoKeluar      String?
+  platNomorMasuk  String?
+  platNomorKeluar String?
+  sumber          Sumber      @default(DEMO)
+  status          StatusLog
+  waktuMasuk      DateTime    @default(now())
+  waktuKeluar     DateTime?
+
+  @@index([kartuRfidId, status])
+}

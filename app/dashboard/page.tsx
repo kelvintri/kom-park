@@ -60,8 +60,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <div className="mx-auto max-w-6xl space-y-8">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <h1 className="font-heading text-3xl font-extrabold tracking-[-0.02em] text-[#002045]">
             Dashboard Parkir
@@ -77,7 +77,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {statCards.map(({ key, title, icon: Icon, iconWrapClassName }) => (
           <section
             key={key}
@@ -182,7 +182,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <div className="mt-8 flex items-center justify-center">
+      <div className="flex items-center justify-center">
         <div className="flex items-center gap-3 rounded-full border border-[#1a365d]/10 bg-[#1a365d]/5 px-6 py-3">
           <div className="flex gap-1">
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#002045] [animation-delay:0s]" />

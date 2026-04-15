@@ -1,6 +1,6 @@
-import { PrismaClient, Peran, Status, StatusKartu, TipeGate } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import 'dotenv/config'
+import { Peran, Status, StatusKartu, TipeGate } from '@prisma/client'
+import prisma from '../lib/prisma'
 
 async function main() {
   console.log('Seeding data...')

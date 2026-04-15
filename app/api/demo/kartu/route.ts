@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { StatusLog } from "@prisma/client";
+import { mockCards } from "@/lib/mockData";
 
 export async function GET() {
   try {
@@ -26,7 +27,10 @@ export async function GET() {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error("Error fetching demo cards:", error);
+    console.warn("DB connection failed, falling back to mock data", error);
+    if (process.env.NEXT_PUBLIC_APP_MODE === "demo") {
+      return NextResponse.json(mockCards);
+    }
     return NextResponse.json({ error: "Failed to fetch cards" }, { status: 500 });
   }
 }

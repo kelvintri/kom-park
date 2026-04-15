@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { StatusLog } from "@prisma/client";
 import { startOfDay, endOfDay } from "date-fns";
+import { mockStatus } from "@/lib/mockData";
 
 export async function GET() {
   try {
@@ -24,7 +25,7 @@ export async function GET() {
         }
       }),
       prisma.logParkir.findMany({
-        take: 5,
+        take: 10,
         orderBy: { waktuMasuk: "desc" },
         include: {
           kartuRfid: {
@@ -51,7 +52,10 @@ export async function GET() {
       }))
     });
   } catch (error) {
-    console.error("Error fetching demo status:", error);
+    console.warn("DB connection failed, falling back to mock data", error);
+    if (process.env.NEXT_PUBLIC_APP_MODE === "demo") {
+      return NextResponse.json(mockStatus);
+    }
     return NextResponse.json({ error: "Failed to fetch status" }, { status: 500 });
   }
 }

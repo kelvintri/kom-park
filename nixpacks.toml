@@ -1,0 +1,16 @@
+[phases.build]
+cmds = [
+  "pnpm install",
+  "pnpm prisma generate",
+  "pnpm next build"
+]
+
+[phases.setup]
+nixPkgs = ["nodejs_20", "pnpm"]
+
+[start]
+cmd = "pnpm start"
+
+[variables]
+NODE_ENV = "production"
+PORT = "3000"

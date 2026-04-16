@@ -31,9 +31,9 @@ export function Sidebar() {
           <Car className="h-5 w-5" />
         </div>
         <div>
-          <h1 className="font-heading text-xl font-bold tracking-[-0.02em]">Campus Parking</h1>
+          <h1 className="font-heading text-xl font-bold tracking-[-0.02em]">Sistem Parkir</h1>
           <p className="text-[10px] font-bold tracking-[0.24em] text-white/50 uppercase">
-            Academic Authority
+            ITB STIKOM BALI
           </p>
         </div>
       </div>
@@ -65,7 +65,7 @@ export function Sidebar() {
             <ShieldCheck className="h-4 w-4" />
           </div>
           <div className="min-w-0">
-            <p className="truncate text-xs font-bold text-white">Admin Utama</p>
+            <p className="truncate text-xs font-bold text-white">Superadmin</p>
             <p className="truncate text-[10px] text-white/50">Superuser Access</p>
           </div>
         </div>

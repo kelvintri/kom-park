@@ -100,6 +100,12 @@ function LoginContent() {
             <h1 className="font-['Playfair Display'] text-4xl font-black text-[#191c1e] mb-2 tracking-tight">Login Sistem Parkir</h1>
             <p className="text-[#43474e] font-sans font-semibold uppercase tracking-[0.15em] text-[11px] opacity-80">ITB STIKOM BALI</p>
           </header>
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-bold uppercase tracking-wider animate-in fade-in slide-in-from-top-2 flex items-center gap-2">
+              <Shield className="w-4 h-4" />
+              {error}
+            </div>
+          )}
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <label className="block text-[11px] font-bold text-[#74777f] uppercase tracking-widest px-1 font-sans" htmlFor="email">
@@ -155,14 +161,23 @@ function LoginContent() {
             </div>
             <div className="pt-2">
               <button
-                className="w-full bg-[#1a365d] text-white font-sans font-bold py-3 rounded-xl shadow-xl shadow-[#1a365d]/20 hover:bg-[#002045] transition-all active:scale-[0.98] flex items-center justify-center gap-2 group uppercase tracking-widest text-xs"
+                className="w-full bg-[#1a365d] text-white font-sans font-bold py-3 rounded-xl shadow-xl shadow-[#1a365d]/20 hover:bg-[#002045] transition-all active:scale-[0.98] flex items-center justify-center gap-2 group uppercase tracking-widest text-xs disabled:opacity-70 disabled:cursor-not-allowed"
                 type="submit"
                 disabled={isLoading}
               >
-                <span>Login</span>
-                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                </svg>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Authenticating...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Login</span>
+                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                    </svg>
+                  </>
+                )}
               </button>
             </div>
           </form>

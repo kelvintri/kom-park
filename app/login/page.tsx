@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { Loader2, Lock, Mail, Eye, EyeOff } from "lucide-react";
+import { Loader2, Shield, Lock, Eye, EyeOff, Badge } from "lucide-react";
 
 function LoginContent() {
   const router = useRouter();
@@ -11,6 +11,7 @@ function LoginContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [showDemoNote, setShowDemoNote] = useState(true);
 
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
@@ -64,96 +65,67 @@ function LoginContent() {
   };
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left Pane: Branding Panel */}
-      <section className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-16 bg-[#1a365d]">
-        {/* Abstract Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a365d] via-[#1a365d] to-[#002045] opacity-90"></div>
-        {/* Pattern Background */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-50"></div>
-        {/* Brand Header */}
-        <div className="relative z-10">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-white/5 backdrop-blur-md rounded-lg flex items-center justify-center border border-white/10">
-              <svg className="text-white text-2xl" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>
+    <div className="bg-[#001b3c] min-h-screen flex items-center justify-center p-6 antialiased font-sans relative">
+      {/* Demo Mode Note */}
+      {showDemoNote && (
+        <div className="absolute top-4 right-4 bg-[#ffddba] border border-[#ffddba]/50 rounded-lg px-4 py-3 shadow-lg max-w-xs animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-start gap-3">
+            <div className="flex-1">
+              <p className="text-[#2b1700] text-xs font-bold uppercase tracking-wider mb-1">Demo Mode</p>
+              <p className="text-[#2b1700] text-sm mb-2">
+                System is running in demo mode. Use these credentials:
+              </p>
+              <div className="bg-[#fff8f0] rounded px-3 py-2 mb-2 font-mono text-xs">
+                <p className="text-[#2b1700]">admin@campusparking.com</p>
+                <p className="text-[#2b1700]">admin123</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowDemoNote(false)}
+              className="text-[#2b1700]/60 hover:text-[#2b1700] transition-colors"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
               </svg>
-            </div>
-            <div>
-              <p className="text-white font-bold tracking-[0.2em] uppercase text-[10px] opacity-60">Admin Portal</p>
-              <h2 className="text-white font-headline font-semibold tracking-tight text-lg">University Parking</h2>
-            </div>
+            </button>
           </div>
         </div>
-        {/* Central Content */}
-        <div className="relative z-10 max-w-md">
-          <h1 className="text-white font-headline font-extrabold text-4xl leading-tight tracking-tight mb-6">
-            Institutional <br/><span className="text-[#adc7f7]">Access Control</span>
-          </h1>
-          <p className="text-[#86a0cd]/80 text-base leading-relaxed font-normal border-l-2 border-[#adc7f7]/30 pl-6">
-            Administrative gateway for the management and oversight of campus transit infrastructure.
-          </p>
-        </div>
-        {/* Status Indicator */}
-        <div className="relative z-10">
-          <div className="inline-flex items-center gap-3 px-3 py-1.5 bg-white/5 backdrop-blur-sm rounded-full border border-white/10">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span className="text-white/60 text-[10px] font-bold tracking-widest uppercase">Node 01 Active</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Right Pane: Modernized Login Form */}
-      <section className="w-full lg:w-1/2 flex items-center justify-center bg-[#ffffff] p-8 md:p-16">
-        <div className="w-full max-w-sm">
-          {/* Mobile Branding */}
-          <div className="lg:hidden mb-16 text-center">
-            <div className="inline-flex items-center gap-3">
-              <svg className="text-[#002045] text-4xl" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>
-              </svg>
-              <h2 className="text-[#002045] font-headline font-bold tracking-tight text-xl">University Parking</h2>
+      )}
+      <main className="w-full max-w-[480px] bg-white rounded-2xl shadow-2xl overflow-hidden relative border border-white/10">
+        <div className="p-8 md:p-12">
+          <header className="text-center mb-10">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-[#f2f4f6] rounded-xl mb-6 border border-[#e6e8ea]">
+              <Shield className="text-[#002045] text-3xl" />
             </div>
-          </div>
-          {/* Form Header */}
-          <header className="mb-12 text-center lg:text-left">
-            <h2 className="text-[#191c1e] font-headline font-bold text-3xl mb-4 tracking-tight">Administrative Sign In</h2>
-            <p className="text-[#43474e] font-medium text-sm">Authorized personnel only. Please verify your identity.</p>
+            <h1 className="font-['Playfair Display'] text-4xl font-black text-[#191c1e] mb-2 tracking-tight">Login Sistem Parkir</h1>
+            <p className="text-[#43474e] font-sans font-semibold uppercase tracking-[0.15em] text-[11px] opacity-80">ITB STIKOM BALI</p>
           </header>
-          {/* Login Form */}
-          <form className="space-y-8" onSubmit={handleSubmit}>
-            {/* Admin ID Field */}
-            <div className="space-y-3">
-              <label className="block text-[11px] font-bold text-[#74777f] uppercase tracking-wider px-1" htmlFor="email">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-2">
+              <label className="block text-[11px] font-bold text-[#74777f] uppercase tracking-widest px-1 font-sans" htmlFor="email">
                 Admin ID
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg className="text-[#74777f]/60 text-xl group-focus-within:text-[#002045] transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                  </svg>
+                  <Badge className="text-[#74777f]/60 text-xl group-focus-within:text-[#002045] transition-colors" />
                 </div>
                 <input
-                  className="block w-full pl-12 pr-4 py-4 bg-[#f2f4f6] text-[#191c1e] border-transparent border-2 rounded-xl focus:ring-0 focus:border-[#002045]/20 focus:bg-white transition-all placeholder:text-[#c4c6cf]/60 font-medium text-sm"
+                  className="block w-full pl-12 pr-4 py-4 bg-[#f2f4f6] text-[#191c1e] border-transparent border rounded-xl focus:ring-0 focus:border-[#002045]/30 focus:bg-white transition-all placeholder:text-[#c4c6cf]/60 font-medium text-sm"
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Enter your system ID"
+                  placeholder="System Identifier"
                   required
                 />
               </div>
             </div>
-            {/* Password Field */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex justify-between items-center px-1">
-                <label className="text-[11px] font-bold text-[#74777f] uppercase tracking-wider" htmlFor="password">
-                  Password
+                <label className="text-[11px] font-bold text-[#74777f] uppercase tracking-widest font-sans" htmlFor="password">
+                  Security Key
                 </label>
-                <a className="text-[11px] font-bold text-[#002045] uppercase tracking-wider hover:opacity-70 transition-opacity" href="#">
-                  Recovery
+                <a className="text-[10px] font-bold text-[#002045] uppercase tracking-widest hover:underline transition-all font-sans" href="#">
+                  Reset
                 </a>
               </div>
               <div className="relative group">
@@ -161,7 +133,7 @@ function LoginContent() {
                   <Lock className="text-[#74777f]/60 text-xl group-focus-within:text-[#002045] transition-colors" />
                 </div>
                 <input
-                  className="block w-full pl-12 pr-12 py-4 bg-[#f2f4f6] text-[#191c1e] border-transparent border-2 rounded-xl focus:ring-0 focus:border-[#002045]/20 focus:bg-white transition-all placeholder:text-[#c4c6cf]/60 font-medium text-sm"
+                  className="block w-full pl-12 pr-12 py-4 bg-[#f2f4f6] text-[#191c1e] border-transparent border rounded-xl focus:ring-0 focus:border-[#002045]/30 focus:bg-white transition-all placeholder:text-[#c4c6cf]/60 font-medium text-sm"
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
@@ -181,58 +153,42 @@ function LoginContent() {
                 </button>
               </div>
             </div>
-            {/* Error Message */}
-            {error && (
-              <div className="flex items-center gap-2 rounded-xl bg-[#ffdad6] p-3 text-sm text-[#93000a]">
-                <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                </svg>
-                {error}
-              </div>
-            )}
-            {/* Action Button */}
-            <div className="pt-4">
+            <div className="pt-2">
               <button
-                className="w-full bg-[#1a365d] text-white font-headline font-bold py-4 rounded-xl shadow-lg shadow-[#1a365d]/20 hover:bg-[#002045] transition-all active:scale-[0.99] flex items-center justify-center gap-3 group"
+                className="w-full bg-[#1a365d] text-white font-sans font-bold py-3 rounded-xl shadow-xl shadow-[#1a365d]/20 hover:bg-[#002045] transition-all active:scale-[0.98] flex items-center justify-center gap-2 group uppercase tracking-widest text-xs"
                 type="submit"
                 disabled={isLoading}
               >
-                <span className="tracking-wide">Access System</span>
-                <svg className="text-xl group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                <span>Login</span>
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                 </svg>
               </button>
             </div>
           </form>
-          {/* Support Footer */}
-          <footer className="mt-20 pt-10 border-t border-[#e6e8ea] flex flex-col items-center">
-            <div className="flex gap-8 mb-8">
-              <a className="flex items-center gap-2 text-[#74777f] font-bold text-[10px] uppercase tracking-widest hover:text-[#002045] transition-colors" href="#">
-                <svg className="text-base" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                </svg>
-                <span>Support</span>
-              </a>
-              <a className="flex items-center gap-2 text-[#74777f] font-bold text-[10px] uppercase tracking-widest hover:text-[#002045] transition-colors" href="#">
-                <svg className="text-base" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-                </svg>
-                <span>Security</span>
-              </a>
+          <footer className="mt-12 pt-8 border-t border-[#e0e3e5] flex flex-col items-center">
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center gap-2 px-2 py-1 bg-[#f2f4f6] rounded border border-[#e6e8ea]">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                </span>
+                <span className="text-[#43474e]/70 text-[8px] font-bold tracking-[0.2em] uppercase">Systems Running</span>
+              </div>
+              <p className="text-[9px] text-[#74777f]/40 font-bold tracking-[0.25em] uppercase text-center mt-2">
+                © 2026 Kom-Park Team
+              </p>
             </div>
-            <p className="text-[9px] text-[#74777f]/50 font-bold tracking-[0.2em] uppercase text-center">
-              © 2024 University Transit Authority
-            </p>
           </footer>
         </div>
-      </section>
+      </main>
     </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#f7f9fb]"><Loader2 className="h-8 w-8 animate-spin text-[#1a365d]" /></div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#001b3c]"><Loader2 className="h-8 w-8 animate-spin text-[#1a365d]" /></div>}>
       <LoginContent />
     </Suspense>
   );

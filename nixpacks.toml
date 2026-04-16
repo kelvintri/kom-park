@@ -5,7 +5,7 @@ cmds = [
 ]
 
 [phases.setup]
-nixPkgs = ["nodejs_20", "pnpm"]
+nixPkgs = ["nodejs_22", "pnpm"]
 
 [start]
 cmd = "pnpm start"

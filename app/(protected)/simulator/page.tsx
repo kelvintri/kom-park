@@ -23,32 +23,32 @@ export default function SimulatorPage() {
   };
 
   // Calculate stats or use API data
-  const parkedCards = cards.filter((c: any) => c.sedangParkir);
+  const parkedCards = cards.filter((c: { sedangParkir: boolean }) => c.sedangParkir);
   const totalCards = cards.length;
   const occupancy = totalCards > 0 ? Math.round((parkedCards.length / totalCards) * 100) : 0;
   
   const stats = statsData || {
     occupancy,
-    students: parkedCards.filter((c: any) => c.peran === "MAHASISWA").length,
-    staff: parkedCards.filter((c: any) => c.peran === "DOSEN" || c.peran === "STAF").length,
-    guests: parkedCards.filter((c: any) => c.peran === "TAMU").length,
+    students: parkedCards.filter((c: { peran: string }) => c.peran === "MAHASISWA").length,
+    staff: parkedCards.filter((c: { peran: string }) => c.peran === "DOSEN" || c.peran === "STAF").length,
+    guests: parkedCards.filter((c: { peran: string }) => c.peran === "TAMU").length,
     fastestExit: "2.4s",
     latency: "Low"
   };
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-[#002045] font-['Manrope'] tracking-[-0.02em]">Gate Simulator</h1>
-        <p className="text-[#43474e]">Perform live entry and exit simulations for the RFID infrastructure.</p>
-      </div>
+        <div className="mb-8">
+          <h1 className="text-3xl font-extrabold text-[#002045] font-['Manrope'] tracking-[-0.02em]">Gate Simulator</h1>
+          <p className="text-[#43474e]">Perform live entry and exit simulations for the RFID infrastructure.</p>
+        </div>
 
-      <GatePanel 
-        gates={gates} 
-        cards={cards} 
-        onSuccess={handleRefresh}
-        stats={stats}
-      />
-    </div>
+        <GatePanel 
+          gates={gates} 
+          cards={cards} 
+          onSuccess={handleRefresh}
+          stats={stats}
+        />
+      </div>
   );
 }

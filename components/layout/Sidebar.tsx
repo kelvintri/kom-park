@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { 
   LayoutDashboard, 
@@ -9,7 +10,8 @@ import {
   History, 
   Users, 
   Car,
-  ShieldCheck
+  ShieldCheck,
+  LogOut
 } from "lucide-react";
 
 const menuItems = [
@@ -67,6 +69,13 @@ export function Sidebar() {
             <p className="truncate text-[10px] text-white/50">Superuser Access</p>
           </div>
         </div>
+        <button
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className="mt-4 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm text-white/70 transition-all duration-200 hover:bg-white/5 hover:text-white"
+        >
+          <LogOut className="h-[18px] w-[18px]" />
+          Sign Out
+        </button>
       </div>
     </aside>
   );

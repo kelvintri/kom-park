@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Campus Parking Management - Secure Access</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c4c6cf",
+                        "surface": "#f7f9fb",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d8dadc",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "tertiary-fixed-dim": "#f2bc82",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-surface-variant": "#43474e",
+                        "tertiary-fixed": "#ffddba",
+                        "surface-tint": "#455f88",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2d3133",
+                        "primary-fixed": "#d6e3ff",
+                        "outline": "#74777f",
+                        "on-primary-container": "#86a0cd",
+                        "on-secondary-container": "#57657a",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "primary-fixed-dim": "#adc7f7",
+                        "background": "#f7f9fb",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e6e8ea",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e0e3e5",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "tertiary": "#321b00",
+                        "on-tertiary-fixed": "#2b1700",
+                        "tertiary-container": "#4f2e00",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary": "#515f74",
+                        "on-background": "#191c1e",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container": "#eceef0",
+                        "secondary-fixed": "#d5e3fc",
+                        "primary-container": "#1a365d",
+                        "on-tertiary-container": "#c6955e",
+                        "on-tertiary-fixed-variant": "#633f0f",
+                        "on-primary-fixed": "#001b3c",
+                        "on-surface": "#191c1e",
+                        "secondary-container": "#d5e3fc",
+                        "primary": "#002045",
+                        "inverse-primary": "#adc7f7",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+        .bg-pattern {
+            background-color: #1a365d;
+            background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased overflow-hidden">
+<main class="flex min-h-screen">
+<!-- Left Pane: Minimal Branding Panel -->
+<section class="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-16 bg-pattern">
+<!-- Abstract Overlay -->
+<div class="absolute inset-0 bg-gradient-to-br from-[#1a365d] via-[#1a365d] to-[#002045] opacity-90"></div>
+<!-- Brand Header -->
+<div class="relative z-10">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-white/5 backdrop-blur-md rounded-lg flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-white text-2xl" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<p class="text-white font-bold tracking-[0.2em] uppercase text-[10px] opacity-60">Admin Portal</p>
+<h2 class="text-white font-headline font-semibold tracking-tight text-lg">University Parking</h2>
+</div>
+</div>
+</div>
+<!-- Central Content -->
+<div class="relative z-10 max-w-md">
+<h1 class="text-white font-headline font-extrabold text-4xl leading-tight tracking-tight mb-6">
+                Institutional <br/><span class="text-primary-fixed-dim">Access Control</span>
+</h1>
+<p class="text-on-primary-container/80 text-base leading-relaxed font-normal border-l-2 border-primary-fixed-dim/30 pl-6">
+                Administrative gateway for the management and oversight of campus transit infrastructure.
+            </p>
+</div>
+<!-- Status Indicator -->
+<div class="relative z-10">
+<div class="inline-flex items-center gap-3 px-3 py-1.5 bg-white/5 backdrop-blur-sm rounded-full border border-white/10">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+</span>
+<span class="text-white/60 text-[10px] font-bold tracking-widest uppercase">Node 01 Active</span>
+</div>
+</div>
+</section>
+<!-- Right Pane: Modernized Login Form -->
+<section class="w-full lg:w-1/2 flex items-center justify-center bg-surface-container-lowest p-8 md:p-16">
+<div class="w-full max-w-sm">
+<!-- Mobile Branding -->
+<div class="lg:hidden mb-16 text-center">
+<div class="inline-flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="account_balance">account_balance</span>
+<h2 class="text-primary font-headline font-bold tracking-tight text-xl">University Parking</h2>
+</div>
+</div>
+<!-- Form Header -->
+<header class="mb-12 text-center lg:text-left">
+<h2 class="text-on-surface font-headline font-bold text-3xl mb-4 tracking-tight">Administrative Sign In</h2>
+<p class="text-on-surface-variant font-medium text-sm">Authorized personnel only. Please verify your identity.</p>
+</header>
+<!-- Login Form -->
+<form action="#" class="space-y-8" method="POST">
+<!-- Admin ID Field -->
+<div class="space-y-3">
+<label class="block text-[11px] font-bold text-outline uppercase tracking-wider px-1" for="identity">Admin ID</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline/60 text-xl group-focus-within:text-primary transition-colors" data-icon="badge">badge</span>
+</div>
+<input class="block w-full pl-12 pr-4 py-4 bg-surface-container-low text-on-surface border-transparent border-2 rounded-xl focus:ring-0 focus:border-primary/20 focus:bg-white transition-all placeholder:text-outline-variant/60 font-medium text-sm" id="identity" name="identity" placeholder="Enter your system ID" required="" type="text"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-3">
+<div class="flex justify-between items-center px-1">
+<label class="text-[11px] font-bold text-outline uppercase tracking-wider" for="password">Password</label>
+<a class="text-[11px] font-bold text-primary uppercase tracking-wider hover:opacity-70 transition-opacity" href="#">Recovery</a>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline/60 text-xl group-focus-within:text-primary transition-colors" data-icon="key">key</span>
+</div>
+<input class="block w-full pl-12 pr-12 py-4 bg-surface-container-low text-on-surface border-transparent border-2 rounded-xl focus:ring-0 focus:border-primary/20 focus:bg-white transition-all placeholder:text-outline-variant/60 font-medium text-sm" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline/60 hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-xl" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Action Button -->
+<div class="pt-4">
+<button class="w-full bg-primary-container text-white font-headline font-bold py-4 rounded-xl shadow-lg shadow-primary-container/20 hover:bg-primary transition-all active:scale-[0.99] flex items-center justify-center gap-3 group" type="submit">
+<span class="tracking-wide">Access System</span>
+<span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform" data-icon="arrow_right_alt">arrow_right_alt</span>
+</button>
+</div>
+</form>
+<!-- Support Footer -->
+<footer class="mt-20 pt-10 border-t border-surface-container-high flex flex-col items-center">
+<div class="flex gap-8 mb-8">
+<a class="flex items-center gap-2 text-outline font-bold text-[10px] uppercase tracking-widest hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-base" data-icon="support">support</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-2 text-outline font-bold text-[10px] uppercase tracking-widest hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-base" data-icon="policy">policy</span>
+<span>Security</span>
+</a>
+</div>
+<p class="text-[9px] text-outline/50 font-bold tracking-[0.2em] uppercase text-center">
+                    © 2024 University Transit Authority
+                </p>
+</footer>
+</div>
+</section>
+</main>
+</body></html>

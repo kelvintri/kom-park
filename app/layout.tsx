@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthProvider";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 // Material Symbols font for Stitch design icons
 const materialSymbolsFont = `
@@ -50,6 +51,7 @@ export default function RootLayout({
         <AuthProvider>
           {children}
         </AuthProvider>
+        <SpeedInsights />
       </body>
     </html>
   );

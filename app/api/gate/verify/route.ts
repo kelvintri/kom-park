@@ -70,6 +70,10 @@ export async function POST(req: NextRequest) {
 
     // 2. Handle Entry/Exit
     if (type.toUpperCase() === TipeGate.MASUK) {
+      if (!kartu) {
+        return NextResponse.json({ access: false, reason: "identitas_diperlukan" });
+      }
+
       // Check if already in
       const existingLog = await prisma.logParkir.findFirst({
         where: { kartuRfidId: kartu.id, status: StatusLog.MASUK },

@@ -45,6 +45,8 @@ interface GatePanelProps {
     students: number;
     staff: number;
     guests: number;
+    totalParked: number;
+    displayCount?: string;
     fastestExit: string;
     latency: string;
   };
@@ -468,7 +470,7 @@ export function GatePanel({ gates, cards, onSuccess, stats }: GatePanelProps) {
                   </div>
                   <h3 className="text-lg font-bold text-[#43474e] mb-2">Standby Mode</h3>
                   <p className="text-sm text-[#43474e]/70 max-w-xs mx-auto">
-                    Initiate a "Tap Keluar" to view transaction details, duration, and access status here.
+                    Initiate a &quot;Tap Keluar&quot; to view transaction details, duration, and access status here.
                   </p>
                 </div>
               )}

@@ -33,6 +33,7 @@ export default function SimulatorPage() {
   } : {
     occupancy,
     displayCount: `${parkedCards.length}/${TOTAL_SLOTS}`,
+    totalParked: parkedCards.length,
     students: parkedCards.filter((c: { peran: string }) => c.peran === "MAHASISWA").length,
     staff: parkedCards.filter((c: { peran: string }) => c.peran === "DOSEN" || c.peran === "STAF").length,
     guests: parkedCards.filter((c: { peran: string }) => c.peran === "TAMU").length,

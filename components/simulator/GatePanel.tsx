@@ -57,10 +57,15 @@ export function GatePanel({ gates, cards, onSuccess, stats }: GatePanelProps) {
   const [loadingMasuk, setLoadingMasuk] = useState(false);
   const [resultMasuk, setResultMasuk] = useState<any>(null);
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
+  const [isGuestMode, setIsGuestMode] = useState(false);
+  const [showTicket, setShowTicket] = useState<string | null>(null);
 
   // Gate Keluar state
   const [selectedGateKeluar, setSelectedGateKeluar] = useState<string>("");
   const [selectedCardKeluar, setSelectedCardKeluar] = useState<string>("");
+  const [ticketIdInput, setTicketIdInput] = useState<string>("");
+  const [isTicketExitMode, setIsTicketExitMode] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
   const [loadingKeluar, setLoadingKeluar] = useState(false);
   const [resultKeluar, setResultKeluar] = useState<any>(null);
   const [logId, setLogId] = useState<string>("--");
@@ -108,8 +113,59 @@ export function GatePanel({ gates, cards, onSuccess, stats }: GatePanelProps) {
     }
   };
 
+  const handleGuestEntry = async () => {
+    if (!selectedGateMasuk) return;
+
+    setLoadingMasuk(true);
+    setResultMasuk(null);
+    setCapturedPhoto(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("gate_id", selectedGateMasuk);
+      formData.append("type", "masuk");
+      formData.append("is_guest", "true");
+
+      const res = await fetch("/api/gate/verify", {
+        method: "POST",
+        headers: {
+          "X-Gate-Secret": process.env.NEXT_PUBLIC_GATE_SECRET || "parkir-kampus-2026"
+        },
+        body: formData
+      });
+
+      const data = await res.json();
+      setResultMasuk(data);
+      
+      if (data.access) {
+        setCapturedPhoto(`https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&q=80&w=400`);
+        onSuccess();
+        if (data.logId) {
+          setShowTicket(data.logId);
+        }
+      }
+    } catch (error) {
+      console.error("Guest entry error:", error);
+      setResultMasuk({ access: false, reason: "network_error" });
+    } finally {
+      setLoadingMasuk(false);
+    }
+  };
+
+  const handleScanQR = () => {
+    setIsScanning(true);
+    // Simulate scan delay
+    setTimeout(() => {
+      // If we have a ticket from this session, we can "auto-detect" it for the demo
+      if (showTicket) {
+        setTicketIdInput(showTicket);
+      }
+      setIsScanning(false);
+    }, 1500);
+  };
+
   const handleTapKeluar = async () => {
-    if (!selectedGateKeluar || !selectedCardKeluar) return;
+    if (!selectedGateKeluar || (!selectedCardKeluar && !ticketIdInput)) return;
 
     setLoadingKeluar(true);
     setResultKeluar(null);
@@ -117,7 +173,11 @@ export function GatePanel({ gates, cards, onSuccess, stats }: GatePanelProps) {
 
     try {
       const formData = new FormData();
-      formData.append("uid", selectedCardKeluar);
+      if (isTicketExitMode) {
+        formData.append("ticket_id", ticketIdInput);
+      } else {
+        formData.append("uid", selectedCardKeluar);
+      }
       formData.append("gate_id", selectedGateKeluar);
       formData.append("type", "keluar");
 
@@ -139,6 +199,7 @@ export function GatePanel({ gates, cards, onSuccess, stats }: GatePanelProps) {
       if (data.access) {
         onSuccess();
         setSelectedCardKeluar("");
+        setTicketIdInput("");
       }
     } catch (error) {
       console.error("Tap error:", error);
@@ -162,25 +223,52 @@ export function GatePanel({ gates, cards, onSuccess, stats }: GatePanelProps) {
               <h2 className="text-2xl font-bold text-[#002045] font-['Manrope'] tracking-[-0.02em]">Gate Masuk</h2>
             </div>
             <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-[#43474e] px-1">Pilih Kartu</label>
-                <select 
-                  className="w-full bg-[#f2f4f6] border-none rounded-xl py-4 px-4 text-[#191c1e] focus:ring-2 focus:ring-[#1a365d] appearance-none cursor-pointer"
-                  value={selectedCardMasuk}
-                  onChange={(e) => setSelectedCardMasuk(e.target.value)}
+              <div className="flex items-center gap-2 mb-2">
+                <button 
+                  onClick={() => setIsGuestMode(false)}
+                  className={cn("flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg border-2 transition-all", !isGuestMode ? "bg-[#1a365d] border-[#1a365d] text-white" : "border-[#1a365d]/10 text-[#1a365d]/50")}
                 >
-                  <option value="">Pilih kartu...</option>
-                  {masukCards.length > 0 ? (
-                    masukCards.map((card) => (
-                      <option key={card.uid} value={card.uid}>
-                        {card.nama} — {card.nimNip} ({card.peran})
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Tidak ada kartu tersedia</option>
-                  )}
-                </select>
+                  Member (RFID)
+                </button>
+                <button 
+                  onClick={() => setIsGuestMode(true)}
+                  className={cn("flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg border-2 transition-all", isGuestMode ? "bg-emerald-600 border-emerald-600 text-white" : "border-emerald-600/10 text-emerald-600/50")}
+                >
+                  Guest (Ticket)
+                </button>
               </div>
+
+              {!isGuestMode ? (
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#43474e] px-1">Pilih Kartu</label>
+                  <select 
+                    className="w-full bg-[#f2f4f6] border-none rounded-xl py-4 px-4 text-[#191c1e] focus:ring-2 focus:ring-[#1a365d] appearance-none cursor-pointer"
+                    value={selectedCardMasuk}
+                    onChange={(e) => setSelectedCardMasuk(e.target.value)}
+                  >
+                    <option value="">Pilih kartu...</option>
+                    {masukCards.length > 0 ? (
+                      masukCards.map((card) => (
+                        <option key={card.uid} value={card.uid}>
+                          {card.nama} — {card.nimNip} ({card.peran})
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Tidak ada kartu tersedia</option>
+                    )}
+                  </select>
+                </div>
+              ) : (
+                <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                    <MaterialSymbol icon="confirmation_number" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-emerald-900 leading-none">Public Guest Mode</p>
+                    <p className="text-[10px] text-emerald-700/70 mt-1">Press button to issue temporary ticket.</p>
+                  </div>
+                </div>
+              )}
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-[#43474e] px-1">Pilih Gate Masuk</label>
                 <select 
@@ -197,16 +285,19 @@ export function GatePanel({ gates, cards, onSuccess, stats }: GatePanelProps) {
                 </select>
               </div>
               <button 
-                className="w-full py-5 bg-[#1a365d] text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={handleTapMasuk}
-                disabled={loadingMasuk || !selectedGateMasuk || !selectedCardMasuk}
+                className={cn(
+                  "w-full py-5 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed",
+                  isGuestMode ? "bg-emerald-600" : "bg-[#1a365d]"
+                )}
+                onClick={isGuestMode ? handleGuestEntry : handleTapMasuk}
+                disabled={loadingMasuk || !selectedGateMasuk || (!isGuestMode && !selectedCardMasuk)}
               >
                 {loadingMasuk ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    <MaterialSymbol icon="sensors" className="group-hover:translate-x-1 transition-transform" />
-                    <span>Tap Masuk</span>
+                    <MaterialSymbol icon={isGuestMode ? "confirmation_number" : "sensors"} className="group-hover:translate-x-1 transition-transform" />
+                    <span>{isGuestMode ? "Ambil Tiket Tamu" : "Tap Masuk"}</span>
                   </>
                 )}
               </button>
@@ -258,25 +349,74 @@ export function GatePanel({ gates, cards, onSuccess, stats }: GatePanelProps) {
               <h2 className="text-2xl font-bold text-[#002045] font-['Manrope'] tracking-[-0.02em]">Gate Keluar</h2>
             </div>
             <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-[#43474e] px-1">Pilih Kartu</label>
-                <select 
-                  className="w-full bg-[#f2f4f6] border-none rounded-xl py-4 px-4 text-[#191c1e] focus:ring-2 focus:ring-[#1a365d] appearance-none cursor-pointer"
-                  value={selectedCardKeluar}
-                  onChange={(e) => setSelectedCardKeluar(e.target.value)}
+              <div className="flex items-center gap-2 mb-2">
+                <button 
+                  onClick={() => setIsTicketExitMode(false)}
+                  className={cn("flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg border-2 transition-all", !isTicketExitMode ? "bg-[#c6955e] border-[#c6955e] text-white" : "border-[#c6955e]/10 text-[#c6955e]/50")}
                 >
-                  <option value="">— Select Active Vehicle —</option>
-                  {keluarCards.length > 0 ? (
-                    keluarCards.map((card) => (
-                      <option key={card.uid} value={card.uid}>
-                        {card.nama} — {card.nimNip} ({card.peran})
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Tidak ada kendaraan di dalam</option>
-                  )}
-                </select>
+                  Member (RFID)
+                </button>
+                <button 
+                  onClick={() => {
+                    setIsTicketExitMode(true);
+                    setSelectedCardKeluar("");
+                  }}
+                  className={cn("flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg border-2 transition-all", isTicketExitMode ? "bg-emerald-600 border-emerald-600 text-white" : "border-emerald-600/10 text-emerald-600/50")}
+                >
+                  Guest (Ticket ID)
+                </button>
               </div>
+
+              {!isTicketExitMode ? (
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#43474e] px-1">Pilih Kartu</label>
+                  <select 
+                    className="w-full bg-[#f2f4f6] border-none rounded-xl py-4 px-4 text-[#191c1e] focus:ring-2 focus:ring-[#1a365d] appearance-none cursor-pointer"
+                    value={selectedCardKeluar}
+                    onChange={(e) => setSelectedCardKeluar(e.target.value)}
+                  >
+                    <option value="">— Select Active Vehicle —</option>
+                    {keluarCards.length > 0 ? (
+                      keluarCards.map((card) => (
+                        <option key={card.uid} value={card.uid}>
+                          {card.nama} — {card.nimNip} ({card.peran})
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Tidak ada kendaraan di dalam</option>
+                    )}
+                  </select>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#43474e] px-1">Input Ticket ID (UUID)</label>
+                  <div className="flex gap-2">
+                    <input 
+                      type="text"
+                      placeholder="Contoh: 550e8400..."
+                      className="flex-1 bg-[#f2f4f6] border-none rounded-xl py-4 px-4 text-[#191c1e] focus:ring-2 focus:ring-[#1a365d] text-sm"
+                      value={ticketIdInput}
+                      onChange={(e) => setTicketIdInput(e.target.value)}
+                    />
+                    <button 
+                      onClick={handleScanQR}
+                      className={cn(
+                        "p-4 rounded-xl flex items-center justify-center transition-all",
+                        isScanning ? "bg-emerald-100 text-emerald-600 animate-pulse" : "bg-[#1a365d] text-white hover:brightness-110"
+                      )}
+                      title="Scan QR Ticket"
+                    >
+                      <MaterialSymbol icon={isScanning ? "sync" : "qr_code_scanner"} />
+                    </button>
+                  </div>
+                  {isScanning && (
+                    <div className="mt-2 text-[10px] text-emerald-600 font-bold animate-pulse flex items-center justify-center gap-2 bg-emerald-50 py-2 rounded-lg">
+                      <MaterialSymbol icon="camera" size={14} />
+                      Simulasi Memindai QR...
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-[#43474e] px-1">Pilih Gate Keluar</label>
                 <select 
@@ -293,16 +433,19 @@ export function GatePanel({ gates, cards, onSuccess, stats }: GatePanelProps) {
                 </select>
               </div>
               <button 
-                className="w-full py-5 bg-[#c6955e] text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed"
+                className={cn(
+                  "w-full py-5 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed",
+                  isTicketExitMode ? "bg-emerald-600" : "bg-[#c6955e]"
+                )}
                 onClick={handleTapKeluar}
-                disabled={loadingKeluar || !selectedGateKeluar || !selectedCardKeluar}
+                disabled={loadingKeluar || !selectedGateKeluar || (!isTicketExitMode && !selectedCardKeluar) || (isTicketExitMode && !ticketIdInput)}
               >
                 {loadingKeluar ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    <MaterialSymbol icon="exit_to_app" className="group-hover:translate-x-1 transition-transform" />
-                    <span>Tap Keluar</span>
+                    <MaterialSymbol icon={isTicketExitMode ? "confirmation_number" : "exit_to_app"} className="group-hover:translate-x-1 transition-transform" />
+                    <span>{isTicketExitMode ? "Tap Keluar (Tiket)" : "Tap Keluar"}</span>
                   </>
                 )}
               </button>
@@ -340,7 +483,10 @@ export function GatePanel({ gates, cards, onSuccess, stats }: GatePanelProps) {
           <div className="md:col-span-2 bg-[#002045] text-white p-8 rounded-2xl overflow-hidden relative">
             <div className="relative z-10">
               <p className="text-xs font-bold uppercase tracking-widest opacity-60 mb-2">Live Status</p>
-              <h3 className="text-4xl font-black font-['Manrope'] mb-4">{stats.occupancy}% Occupancy</h3>
+              <h3 className="text-4xl font-black font-['Manrope'] mb-4">
+                {stats.occupancy}% Occupancy
+                <span className="text-xl ml-3 opacity-40 font-bold tracking-tight">({stats.displayCount || stats.totalParked + "/300"})</span>
+              </h3>
               <div className="flex gap-4">
                 <div className="px-4 py-2 bg-white/10 rounded-lg backdrop-blur-md">
                   <span className="text-2xl font-bold">{stats.students}</span>
@@ -367,6 +513,50 @@ export function GatePanel({ gates, cards, onSuccess, stats }: GatePanelProps) {
               <p className="text-[10px] text-white/50 uppercase font-bold tracking-tighter">Current Latency: <span className="text-white">{stats.latency}</span></p>
             </div>
           </div>
+        </div>
+      )}
+      {/* Ticket Modal */}
+      {showTicket && (
+        <div className="fixed inset-0 bg-[#002045]/60 backdrop-blur-md z-[110] flex items-center justify-center p-4 animate-in fade-in duration-300">
+           <div className="bg-white rounded-3xl w-full max-w-[320px] shadow-2xl overflow-hidden border border-white/20 relative animate-in zoom-in-95 duration-300">
+             <div className="p-6 text-center bg-emerald-600 text-white">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <MaterialSymbol icon="print" />
+                </div>
+                <h3 className="text-xl font-bold font-['Manrope']">Tiket Parkir</h3>
+                <p className="text-xs text-white/70">Spark Campus Parking System</p>
+             </div>
+             
+             <div className="p-8 flex flex-col items-center">
+                <div className="bg-white p-3 rounded-2xl shadow-[0_8px_24px_rgba(0,0,0,0.08)] mb-6 border border-[#f2f4f6]">
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${showTicket}`}
+                    alt="Ticket QR Code"
+                    className="w-48 h-48"
+                  />
+                </div>
+                
+                <div className="w-full space-y-3 pb-6 border-b border-dashed border-[#c4c6cf]">
+                   <div className="flex justify-between">
+                     <span className="text-[10px] font-bold text-[#57657a] uppercase tracking-widest">Entry Time</span>
+                     <span className="text-xs font-bold text-[#191c1e]">{new Date().toLocaleTimeString()}</span>
+                   </div>
+                   <div className="flex justify-between items-start gap-4">
+                     <span className="text-[10px] font-bold text-[#57657a] uppercase tracking-widest">Ticket ID</span>
+                     <span className="text-[10px] font-mono font-bold text-[#191c1e] text-right break-all">{showTicket}</span>
+                   </div>
+                </div>
+                
+                <button 
+                  onClick={() => setShowTicket(null)}
+                  className="mt-8 w-full py-4 bg-[#1a365d] text-white font-bold rounded-xl hover:brightness-110 active:scale-[0.98] transition-all shadow-md"
+                >
+                  Ambil Karcis
+                </button>
+             </div>
+             
+             <div className="h-4 bg-[#f2f4f6]" style={{ clipPath: 'polygon(0 0, 5% 100%, 10% 0, 15% 100%, 20% 0, 25% 100%, 30% 0, 35% 100%, 40% 0, 45% 100%, 50% 0, 55% 100%, 60% 0, 65% 100%, 70% 0, 75% 100%, 80% 0, 85% 100%, 90% 0, 95% 100%, 100% 0)' }}></div>
+           </div>
         </div>
       )}
     </div>

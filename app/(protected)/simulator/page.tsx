@@ -24,11 +24,15 @@ export default function SimulatorPage() {
 
   // Calculate stats or use API data
   const parkedCards = cards.filter((c: { sedangParkir: boolean }) => c.sedangParkir);
-  const totalCards = cards.length;
-  const occupancy = totalCards > 0 ? Math.round((parkedCards.length / totalCards) * 100) : 0;
+  const TOTAL_SLOTS = 300;
+  const occupancy = Math.round((parkedCards.length / TOTAL_SLOTS) * 100);
   
-  const stats = statsData || {
+  const stats = statsData ? {
+    ...statsData,
+    displayCount: `${statsData.totalParked}/${statsData.totalSlots}`
+  } : {
     occupancy,
+    displayCount: `${parkedCards.length}/${TOTAL_SLOTS}`,
     students: parkedCards.filter((c: { peran: string }) => c.peran === "MAHASISWA").length,
     staff: parkedCards.filter((c: { peran: string }) => c.peran === "DOSEN" || c.peran === "STAF").length,
     guests: parkedCards.filter((c: { peran: string }) => c.peran === "TAMU").length,

@@ -54,9 +54,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       data: data.map(log => ({
         id: log.id,
-        nama: log.kartuRfid?.pengguna.nama || "Unknown",
-        nimNip: log.kartuRfid?.pengguna.nimNip || "-",
-        peran: log.kartuRfid?.pengguna.peran || "-",
+        nama: log.kartuRfid?.pengguna.nama || "GUEST",
+        nimNip: log.kartuRfid?.pengguna.nimNip || log.id, // NIM/NIP for members, Ticket ID for guests
+        peran: log.kartuRfid?.pengguna.peran || "TAMU",
         gateMasuk: log.gateMasuk?.nama,
         gateKeluar: log.gateKeluar?.nama,
         waktuMasuk: log.waktuMasuk,

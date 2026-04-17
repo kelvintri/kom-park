@@ -43,8 +43,8 @@ export async function GET() {
       totalKeluarHariIni,
       logTerbaru: logTerbaru.map(log => ({
         id: log.id,
-        nama: log.kartuRfid?.pengguna.nama || "Unknown",
-        nimNip: log.kartuRfid?.pengguna.nimNip || "-",
+        nama: log.kartuRfid?.pengguna.nama || "GUEST",
+        nimNip: log.kartuRfid?.pengguna.nimNip || log.id,
         gate: log.status === StatusLog.MASUK ? log.gateMasuk?.nama : log.gateKeluar?.nama,
         status: log.status,
         waktu: log.status === StatusLog.MASUK ? log.waktuMasuk : log.waktuKeluar,

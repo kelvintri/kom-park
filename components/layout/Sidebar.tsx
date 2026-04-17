@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { 
   LayoutDashboard, 
@@ -26,16 +27,15 @@ export function Sidebar() {
 
   return (
     <aside className="sticky top-0 flex h-screen w-64 flex-col overflow-hidden bg-gradient-to-b from-[#1a365d] to-[#183154] px-4 py-6 text-white shadow-[12px_0_32px_rgba(26,54,93,0.16)]">
-      <div className="mb-10 flex items-center gap-3 px-2">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 backdrop-blur-md">
-          <Car className="h-5 w-5" />
-        </div>
-        <div>
-          <h1 className="font-heading text-xl font-bold tracking-[-0.02em]">Sistem Parkir</h1>
-          <p className="text-[10px] font-bold tracking-[0.24em] text-white/50 uppercase">
-            ITB STIKOM BALI
-          </p>
-        </div>
+      <div className="mb-10 flex justify-center px-2">
+        <Image 
+          src="/logo-spark.png" 
+          alt="Spark Logo" 
+          width={140} 
+          height={30}
+          className="h-auto w-auto object-contain"
+          priority
+        />
       </div>
 
       <nav className="flex-1 space-y-1">
